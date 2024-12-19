@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 const { 
     createCart,
-    calculateCartTotal,
     clearCart,
     removeCartItem,
     updateCartItem,

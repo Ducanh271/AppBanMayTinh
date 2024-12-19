@@ -229,4 +229,4 @@ async function clearCart(req, res) {
     }
 }
 
-module.exports = { createCart, calculateCartTotal, clearCart, removeCartItem, updateCartItem, addToCart, getCartByUserId, getAllCarts };
+module.exports = { createCart, clearCart, removeCartItem, updateCartItem, addToCart, getCartByUserId, getAllCarts };
