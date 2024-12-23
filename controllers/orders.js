@@ -3,7 +3,7 @@ const { ObjectId } = require('mongodb');
 const Product = require('../models/product');
 // 1. Tạo đơn hàng mới
 async function createOrder(req, res) {
-    const { userId, items } = req.body;
+    const { userId, items, address } = req.body;
 
     // Kiểm tra đầu vào
     if (!userId || !items || items.length === 0) {
@@ -24,6 +24,7 @@ async function createOrder(req, res) {
         const newOrder = {
             userId: userObjectId,
             items: formattedItems,
+            address,
             status: 'pending', // Trạng thái đơn hàng ban đầu
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -32,7 +33,7 @@ async function createOrder(req, res) {
         // Lưu vào collection "orders"
         const result = await Order.insertOne(newOrder);
 
-        res.status(201).json({ message: "Order created successfully", orderId: result.insertedId });
+        res.status(201).json({ message: "Order created successfully", orderId: result.insertedId, address: newOrder.address });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ message: "Error creating order", error: error.message });
@@ -91,6 +92,7 @@ async function getOrderById(req, res) {
             _id: order._id,
             userId: order.userId,
             items: detailedItems,
+            address: order.address,
             totalPrice: detailedItems.reduce((sum, item) => sum + item.total, 0), // Tính tổng giá trị đơn hàng
             status: order.status,
             createdAt: order.createdAt,
