@@ -1,5 +1,7 @@
 const User = require('../models/user');
+const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
+const { hashPassword, comparePassword } = require('../utils/hash'); // Import từ hash.js
 
 //1. Thêm người dùng mới
 async function addUser(req, res) {
@@ -16,11 +18,13 @@ async function addUser(req, res) {
             return res.status(400).json({ message: "Email already exists" });
         }
 
+        // Mã hóa mật khẩu bằng hàm từ hash.js
+        const hashedPassword = await hashPassword(password);
         // Tạo người dùng mới
         const newUser = {
             name: name,
             email: email,
-            password: password, // Password hiện chưa được mã hóa
+            password: hashedPassword, // Lưu mật khẩu đã mã hóa
             createdAt: new Date(),
         };
 
@@ -72,8 +76,9 @@ async function userLogin(req, res) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // Kiểm tra password (hiện tại password chưa mã hóa)
-        if (user.password !== password) {
+        // So sánh mật khẩu bằng hàm từ hash.js
+        const isMatch = await comparePassword(password, user.password);
+        if (!isMatch) {
             return res.status(401).json({ message: "Invalid password" });
         }
 
@@ -195,6 +200,11 @@ async function deleteUserById(req, res) {
         if (result.deletedCount === 0) {
             return res.status(404).json({ message: "User not found" });
         }
+        // Xóa giỏ hàng liên kết với người dùng
+        const cartResult = await Cart.deleteOne({ _id: new ObjectId(userId) });
+        if (cartResult.deletedCount === 0) {
+            console.warn(`No cart found for user ID: ${userId}`);
+        }
 
         res.status(200).json({ message: "User deleted successfully" });
     } catch (error) {
@@ -202,4 +212,4 @@ async function deleteUserById(req, res) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
-module.exports = {deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };
+module.exports = { deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };
