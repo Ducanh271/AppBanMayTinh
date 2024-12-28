@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const { 
-    requestPasswordReset,
-    resetPassword
-} = require('../controllers/passwordReset');
+// const { 
+//     requestPasswordReset,
+//     resetPassword
+// } = require('../controllers/passwordReset');
 
 const {
     deleteUserById,
@@ -17,9 +17,9 @@ const {
 } = require('../controllers/users');
 
 
-// Nhóm route liên quan đến quên mật khẩu
-router.post('/request-password-reset', requestPasswordReset); // Gửi yêu cầu đặt lại mật khẩu
-router.post('/reset-password', resetPassword); // Đặt lại mật khẩu
+// // Nhóm route liên quan đến quên mật khẩu
+// router.post('/request-password-reset', requestPasswordReset); // Gửi yêu cầu đặt lại mật khẩu
+// router.post('/reset-password', resetPassword); // Đặt lại mật khẩu
 
 // Nhóm route liên quan đến quản lý người dùng
 // Route: Đăng nhập người dùng

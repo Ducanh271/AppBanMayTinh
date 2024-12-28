@@ -3,11 +3,22 @@ const { ObjectId } = require('mongodb');
 const Product = require('../models/product');
 // 1. Tạo đơn hàng mới
 async function createOrder(req, res) {
-    const { userId, items, address } = req.body;
+    const { userId, items, address, phoneNumber } = req.body;
+
+    // Hàm kiểm tra định dạng số điện thoại
+    function validatePhoneNumber(phoneNumber) {
+        const phoneRegex = /^[0-9]{10,15}$/; // Chỉ chấp nhận 10-15 chữ số
+        return phoneRegex.test(phoneNumber);
+    }
 
     // Kiểm tra đầu vào
-    if (!userId || !items || items.length === 0) {
+    if (!userId || !items || items.length === 0 || !phoneNumber) {
         return res.status(400).json({ message: "Invalid input" });
+    }
+
+    // Kiểm tra định dạng số điện thoại
+    if (!validatePhoneNumber(phoneNumber)) {
+        return res.status(400).json({ message: "Invalid phone number format" });
     }
 
     try {
@@ -25,6 +36,7 @@ async function createOrder(req, res) {
             userId: userObjectId,
             items: formattedItems,
             address,
+            phoneNumber, // Thêm số điện thoại
             status: 'pending', // Trạng thái đơn hàng ban đầu
             createdAt: new Date(),
             updatedAt: new Date(),
@@ -33,12 +45,18 @@ async function createOrder(req, res) {
         // Lưu vào collection "orders"
         const result = await Order.insertOne(newOrder);
 
-        res.status(201).json({ message: "Order created successfully", orderId: result.insertedId, address: newOrder.address });
+        res.status(201).json({ 
+            message: "Order created successfully", 
+            orderId: result.insertedId, 
+            address: newOrder.address, 
+            phoneNumber: newOrder.phoneNumber 
+        });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ message: "Error creating order", error: error.message });
     }
 }
+
 // 2. Lấy danh sách đơn hàng của một người dùng
 async function getOrdersByUserId(req, res) {
     const userId = req.params.userId;
