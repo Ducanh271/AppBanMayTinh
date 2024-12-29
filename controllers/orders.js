@@ -47,9 +47,7 @@ async function createOrder(req, res) {
 
         res.status(201).json({ 
             message: "Order created successfully", 
-            orderId: result.insertedId, 
-            address: newOrder.address, 
-            phoneNumber: newOrder.phoneNumber 
+            orderId: result.insertedId
         });
     } catch (error) {
         console.error("Error creating order:", error);
