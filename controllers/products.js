@@ -132,33 +132,21 @@ async function getAllCategories(req, res) {
 //8. Lọc sản phẩm theo danh mục
 async function getProductsByCategory(req, res) {
   const { categoryName } = req.params; // Lấy tên danh mục từ URL
-  const { page = 1, limit = 10 } = req.query; // Lấy thông tin phân trang từ query string
-  const skip = (page - 1) * limit; // Tính số bản ghi cần bỏ qua
 
   try {
     // Tìm sản phẩm với điều kiện phân biệt chữ hoa/chữ thường (không phân biệt)
     const products = await Product.find({
       category: { $regex: new RegExp(categoryName, "i") } // "i" là cờ không phân biệt chữ hoa/chữ thường
-    })
-      .skip(parseInt(skip)) // Bỏ qua số bản ghi
-      .limit(parseInt(limit)) // Giới hạn số bản ghi trả về
-      .toArray();
-
-    // Đếm tổng số sản phẩm trong danh mục
-    const totalProducts = await Product.countDocuments({
-      category: { $regex: new RegExp(categoryName, "i") }
-    });
+    }).toArray();
 
     // Kiểm tra nếu không có sản phẩm
     if (products.length === 0) {
       return res.status(404).json({ message: "No products found in this category" });
     }
 
-    // Trả về danh sách sản phẩm cùng với thông tin phân trang
+    // Trả về danh sách sản phẩm
     res.json({
-      total: totalProducts, // Tổng số sản phẩm trong danh mục
-      page: parseInt(page), // Trang hiện tại
-      limit: parseInt(limit), // Số sản phẩm mỗi trang
+      total: products.length, // Tổng số sản phẩm trong danh mục
       products // Dữ liệu sản phẩm
     });
   } catch (error) {
