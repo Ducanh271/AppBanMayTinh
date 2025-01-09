@@ -2,10 +2,46 @@ const User = require('../models/user');
 const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
 const { hashPassword, comparePassword } = require('../utils/hash'); // Import từ hash.js
+//0. Thêm admin
+// Hàm thêm admin mới
+async function addAdmin(req, res) {
+    const { name, email, password } = req.body;
 
+    if (!name || !email || !password) {
+        return res.status(400).json({ message: "Name, email, and password are required" });
+    }
+
+    try {
+        // Kiểm tra email đã tồn tại hay chưa
+        const existingUser = await User.findOne({ email });
+        if (existingUser) {
+            return res.status(400).json({ message: "Email already exists" });
+        }
+        // Mã hóa mật khẩu
+        const hashedPassword = await hashPassword(password);
+
+        // Tạo admin mới
+        const newAdmin = {
+            name,
+            email,
+            password: hashedPassword,
+            role: "admin", // Vai trò admin
+            createdAt: new Date(),
+        };
+
+        const result = await User.insertOne(newAdmin);
+        res.status(201).json({
+            message: "Admin created successfully",
+            adminId: result.insertedId,
+        });
+    } catch (error) {
+        console.error("Error creating admin:", error);
+        res.status(500).json({ message: "Internal server error", error: error.message });
+    }
+}
 //1. Thêm người dùng mới
 async function addUser(req, res) {
-    const { name, email, password } = req.body;
+    const { name, email, password} = req.body;
 
     if (!name || !email || !password) {
         return res.status(400).json({ message: "Name, email, and password are required" });
@@ -25,11 +61,14 @@ async function addUser(req, res) {
             name: name,
             email: email,
             password: hashedPassword, // Lưu mật khẩu đã mã hóa
+            role: "user",
             createdAt: new Date(),
         };
 
         const result = await User.insertOne(newUser);
-        res.status(201).json({ message: "User created successfully", userId: result.insertedId });
+        res.status(201).json({ 
+            message: "User created successfully",
+            userId: result.insertedId });
     } catch (error) {
         console.error("Error creating user:", error);
         res.status(500).json({ message: "Internal server error", error: error.message });
@@ -212,4 +251,4 @@ async function deleteUserById(req, res) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
-module.exports = { deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };
+module.exports = { addAdmin, deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="" />
+    <meta name="author" content="" />
+    <title>Admin Account Management</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous" />
+    <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
+    <link href="css/styles.css" rel="stylesheet" />
+    <link href="css/AdminPageProduct.css" rel="stylesheet" />
+    <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
+    <style>
+        body {
+            background-color: #ffffff; /* Nền trắng */
+            color: #333; /* Màu chữ tối cho dễ đọc */
+        }
+
+       
+      /*  .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #ffffff;
+        }*/
+
+        /*.nav-link {
+            font-size: 1.1rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            color: #f8f9fa;*/ /* Màu chữ sáng cho các liên kết */
+        /*}*/
+
+            .nav-link:hover {
+                color: #ffca28; /* Màu sáng khi hover */
+                background-color: #0056b3; /* Màu nền khi hover */
+                border-radius: 5px;
+                transition: 0.3s;
+            }
+
+        .collapse .nav-link {
+            padding-left: 40px; /* Thụt lề cho các mục con */
+        }
+
+        /* Phần nội dung chính */
+        #layoutSidenav_content {
+            padding-left: 0;
+            background-color: #f9f9f9; /* Nền sáng cho phần nội dung chính */
+        }
+
+        .container-fluid {
+            padding: 30px;
+            border-radius: 10px;
+            background-color: #f9f9f9; /* Màu nền cho nội dung */
+        }
+
+        .sb-sidenav-menu-heading {
+            color: #fff;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .list-group-item {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .list-group-item:hover {
+                transform: translateY(-5px); /* Hiệu ứng nâng lên khi hover */
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+            }
+
+            .list-group-item .btn-danger {
+                background-color: #e74c3c;
+                color: #fff;
+                border: none;
+                transition: 0.3s ease;
+            }
+
+                .list-group-item .btn-danger:hover {
+                    background-color: #c0392b;
+                }
+
+        .pagination .page-link {
+            background-color: #ffffff;
+            color: #007bff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #007bff;
+            color: #ffffff;
+            border: 1px solid #007bff;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #0056b3;
+            color: #ffffff;
+            border: 1px solid #0056b3;
+        }
+
+        footer {
+            background-color: #f8f9fa;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+            footer a {
+                color: #007bff;
+            }
+
+                footer a:hover {
+                    color: #0056b3;
+                }
+
+        h1, h4 {
+            font-weight: bold;
+        }
+
+        .user-info {
+            font-weight: 600; /* In đậm các trường thông tin */
+        }
+    </style>
+</head>
+<body class="sb-nav-fixed">
+    <nav class="sb-topnav navbar navbar-expand navbar-dark bg-dark">
+        <a class="navbar-brand ps-3" href="AdminPageAccount.html">Admin Management</a>
+        <ul class="navbar-nav ms-auto ms-md-0 me-3 me-lg-4">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i></a>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                    <li><a class="dropdown-item" href="#!">Settings</a></li>
+                    <li><a class="dropdown-item" href="#!">Activity Log</a></li>
+                    <li><hr class="dropdown-divider" /></li>
+                    <li><a class="dropdown-item" href="#!">Logout</a></li>
+                </ul>
+            </li>
+        </ul>
+    </nav>
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                <div class="sb-sidenav-menu">
+                    <div class="nav">
+                        <div class="sb-sidenav-menu-heading">Options</div>
+                        <a class="nav-link" href="AdminPageProduct.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Product Management
+                        </a>
+                        <a class="nav-link" href="AdminPageAccount.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
+                            Account Management
+                        </a>
+                        <div class="collapse" id="collapseLayouts" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordion">
+                        </div>
+                        <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                            <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseAuth" aria-expanded="false" aria-controls="pagesCollapseAuth">
+                                    Authentication
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="pagesCollapseAuth" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="login.html">Login</a>
+                                        <a class="nav-link" href="register.html">Register</a>
+                                        <a class="nav-link" href="password.html">Forgot Password</a>
+                                    </nav>
+                                </div>
+                                <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#pagesCollapseError" aria-expanded="false" aria-controls="pagesCollapseError">
+                                    Error
+                                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                                </a>
+                                <div class="collapse" id="pagesCollapseError" aria-labelledby="headingOne" data-bs-parent="#sidenavAccordionPages">
+                                    <nav class="sb-sidenav-menu-nested nav">
+                                        <a class="nav-link" href="401.html">401 Page</a>
+                                        <a class="nav-link" href="404.html">404 Page</a>
+                                        <a class="nav-link" href="500.html">500 Page</a>
+                                    </nav>
+                                </div>
+                            </nav>
+                        </div>
+                        <div class="sb-sidenav-menu-heading">Back to Home</div>
+                        <a class="nav-link" href="charts.html">
+                            <div class="sb-nav-link-icon"><i class="fas fa-chart-area"></i></div>
+                            Charts
+                        </a>
+                    </div>
+                </div>
+            </nav>
+        </div>
+        <div id="layoutSidenav_content">
+            <main>
+                <div class="container-fluid px-4">
+                    <h1 class="mt-4 text-center">Admin Account Management</h1>
+
+                    <!-- Admin Account List -->
+                    <h4 class="mt-4">List of Accounts</h4>
+                    <ul id="user-list" class="list-group mt-3">
+                        <!-- Account items will be populated here -->
+                    </ul>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item" id="prev-page">
+                                <a class="page-link" href="#" tabindex="-1">Previous</a>
+                            </li>
+                            <li class="page-item" id="next-page">
+                                <a class="page-link" href="#">Next</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </main>
+
+            <footer>
+                <div>
+                    <div class="d-flex align-items-center justify-content-center small">
+                        <div class="text-muted">© Your Website 2025</div>
+                        <div>
+                            <a href="#">Privacy Policy</a>
+                            &middot;
+                            <a href="#">Terms & Conditions</a>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
+    <script src="js/scripts.js"></script>
+    <script src="/UserApi.js"></script>
+</body>
+</html>

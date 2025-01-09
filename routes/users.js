@@ -13,20 +13,20 @@ const {
     getAllUsers,
     userLogin,
     addUser,
+    addAdmin,
     getUserById
 } = require('../controllers/users');
 
 
-// // Nhóm route liên quan đến quên mật khẩu
-// router.post('/request-password-reset', requestPasswordReset); // Gửi yêu cầu đặt lại mật khẩu
-// router.post('/reset-password', resetPassword); // Đặt lại mật khẩu
 
+const { authenticate, authorizeAdmin } = require('../middlewares/auth'); // Import middleware
 // Nhóm route liên quan đến quản lý người dùng
 // Route: Đăng nhập người dùng
 router.post('/login', userLogin);
+// Route: Thêm admin (chỉ dành cho admin)
+router.post('/add-admin', authenticate, authorizeAdmin, addAdmin); // Thêm route addAdmin
 // Route: Thêm người dùng mới
 router.post('/', addUser);
-// Route: Lấy tất cả người dùng
 router.get('/', getAllUsers);
 // Route: Lấy danh sách người dùng với giới hạn
 router.get('/limit', getUsersWithLimit);

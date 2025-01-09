@@ -19,7 +19,7 @@ router.post('/add', addToCart);
 router.get('/:userId', getCartByUserId);
 // Route: Cập nhật số lượng sản phẩm trong giỏ hàng
 router.put('/:userId/update-item/:productId', updateCartItem);
-// Route: Xóa sản phẩm khỏi giỏ hàng
+// Route: Xóa sản phẩm khỏi giỏ hàng    
 router.delete('/:userId/remove-item/:productId', removeCartItem);
 // Route: Xóa toàn bộ giỏ hàng
 router.delete('/:userId/clear', clearCart);
