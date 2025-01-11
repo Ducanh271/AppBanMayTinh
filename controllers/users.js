@@ -1,6 +1,9 @@
 const User = require('../models/user');
 const Cart = require('../models/cart');
 const { ObjectId } = require('mongodb');
+const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
+
 const { hashPassword, comparePassword } = require('../utils/hash'); // Import từ hash.js
 //0. Thêm admin
 // Hàm thêm admin mới
@@ -98,7 +101,7 @@ async function getUserById(req, res) {
         res.status(500).json({ message: "Error fetching user", error: error.message });
     }
 }
-//3. Đăng nhập người dùng
+// 3. Đăng nhập người dùng
 async function userLogin(req, res) {
     const { email, password } = req.body;
 
@@ -135,6 +138,48 @@ async function userLogin(req, res) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
+
+// async function userLogin(req, res) {
+//     const { email, password } = req.body;
+
+//     if (!email || !password) {
+//         return res.status(400).json({ message: "Email and password are required" });
+//     }
+
+//     try {
+//         const user = await User.findOne({ email });
+
+//         if (!user) {
+//             return res.status(404).json({ message: "User not found" });
+//         }
+
+//         const isMatch = await bcrypt.compare(password, user.password);
+//         if (!isMatch) {
+//             return res.status(401).json({ message: "Invalid password" });
+//         }
+
+//         // Tạo JWT token
+//         const token = jwt.sign(
+//             { id: user._id, role: user.role },
+//             process.env.JWT_SECRET,
+//             { expiresIn: '1h' } // Token hết hạn sau 1 giờ
+//         );
+
+//         res.status(200).json({
+//             message: "Login successful",
+//             token, // Trả về token
+//             user: {
+//                 id: user._id,
+//                 name: user.name,
+//                 email: user.email,
+//                 role: user.role,
+//             },
+//         });
+//     } catch (error) {
+//         console.error("Error during login:", error);
+//         res.status(500).json({ message: "Internal server error" });
+//     }
+// }
 //4. Lấy tất cả người dùng
 async function getAllUsers(req, res) {
     try {

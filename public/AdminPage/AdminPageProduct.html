@@ -8,8 +8,8 @@
     <meta name="author" content="" />
     <title>Dashboard - SB Admin</title>
     <link href="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/style.min.css" rel="stylesheet" />
-    <link href="css/styles.css" rel="stylesheet" />
-    <link href="css/AdminPageProduct.css" />
+    <link href="../assets/css/styles.css" rel="stylesheet" />
+    <link href="../assets/css/AdminPageProduct.css" rel="stylesheet" />
     <script src="https://use.fontawesome.com/releases/v6.3.0/js/all.js" crossorigin="anonymous"></script>
 </head>
 <body class="sb-nav-fixed">
@@ -154,18 +154,53 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </footer>   
+    <!-- Modal chỉnh sửa sản phẩm -->
+    <div id="edit-product-modal" class="modal" tabindex="-1" style="display:none;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="close" id="close-edit-modal">
+                        <span>&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-product-form">
+                        <div class="form-group">
+                            <label for="edit-product-title">Product Title</label>
+                            <input type="text" class="form-control" id="edit-product-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-product-price">Price</label>
+                            <input type="number" class="form-control" id="edit-product-price" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-product-description">Description</label>
+                            <textarea class="form-control" id="edit-product-description" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-product-category">Category</label>
+                            <input type="text" class="form-control" id="edit-product-category" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-product-image">Image URL</label>
+                            <input type="text" class="form-control" id="edit-product-image" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-
-
-    <script src="/ProductApi.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" crossorigin="anonymous"></script>
-    <script src="js/scripts.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js" crossorigin="anonymous"></script>
     <script src="assets/demo/chart-area-demo.js"></script>
     <script src="assets/demo/chart-bar-demo.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/simple-datatables@7.1.2/dist/umd/simple-datatables.min.js" crossorigin="anonymous"></script>
-    <script src="js/datatables-simple-demo.js"></script>
+    <script src="../assets/js/datatables-simple-demo.js"></script>
+    <script src="../assets/js/scripts.js"></script>
+    <script src="../assets/js/ProductFrontEnd.js"></script>
 </body>
 </html>

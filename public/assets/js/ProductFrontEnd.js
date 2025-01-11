@@ -14,7 +14,12 @@
         console.error('Error fetching products:', error);
     }
 }
-
+// Hàm hiển thị danh sách sản phẩm
+   function renderProducts(products) {
+    const productList = document.getElementById("product-list");
+    productList.innerHTML = ""; // Xóa danh sách cũ
+    products.forEach(product => loadProductFrontEnd(product)); // Hiển thị từng sản phẩm
+}
 async function loadProductFrontEnd(product) {
     const productList = document.getElementById('product-list');
 
@@ -238,6 +243,7 @@ async function searchProducts(keyword) {
 
 
 
+
 document.addEventListener("DOMContentLoaded", () => {
     const paginationContainer = document.querySelector(".pagination");
     const maxVisiblePages = 4; // Số trang hiển thị tối đa
@@ -263,13 +269,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Hàm hiển thị danh sách sản phẩm
-    function renderProducts(products) {
-        const productList = document.getElementById("product-list");
-        productList.innerHTML = ""; // Xóa danh sách cũ
-
-        products.forEach(product => loadProductFrontEnd(product)); // Hiển thị từng sản phẩm
-    }
+ 
 
     // Hàm cập nhật giao diện phân trang
     function updatePagination() {
@@ -349,7 +349,7 @@ document.addEventListener('DOMContentLoaded', () => {
 document.getElementById('close-edit-modal').addEventListener('click', () => {
     document.getElementById('edit-product-modal').style.display = 'none';
 });
-//sự kiện ô tìm kiếm
+// Sự kiện khi nhấn nút Search
 document.getElementById('btnNavbarSearch').addEventListener('click', () => {
     const keyword = document.querySelector('.form-control[placeholder="Search for..."]').value.trim();
     if (keyword) {
@@ -358,7 +358,8 @@ document.getElementById('btnNavbarSearch').addEventListener('click', () => {
         loadProducts(); // Tải lại danh sách tất cả sản phẩm nếu không có từ khóa
     }
 });
-//sự kiện nhấn enter của ô tìm kiếm 
+
+// Sự kiện khi nhấn Enter trong ô tìm kiếm
 document.querySelector('.form-control[placeholder="Search for..."]').addEventListener('keypress', (event) => {
     if (event.key === 'Enter') {
         event.preventDefault();
@@ -378,4 +379,5 @@ function showLoading() {
 function hideLoading() {
     document.getElementById('loading').style.display = 'none';
 }
+
 
