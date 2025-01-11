@@ -16,7 +16,7 @@ async function loadOrders() {
                 orderInfo.innerHTML = `
                     <strong>Order ID:</strong> ${order._id}<br>
                     <strong>Status:</strong> <span class="order-status">${order.status}</span><br>
-                    <strong>Total Price:</strong> $${order.totalPrice || 0}
+                    <strong>Total Price:</strong> ${order.total || 0}
                 `;
 
                 // Nút "Mark as Shipping"

@@ -39,7 +39,7 @@ async function loadProductFrontEnd(product) {
     const text = document.createElement('div');
     text.innerHTML = `
         <strong>${product.title}</strong><br>
-        Price: $${product.price}<br>
+        Price: ${product.price}<br>
         ${product.description}<br>
         Category: ${product.category}
     `;
