@@ -25,11 +25,29 @@ async function createOrder(req, res) {
         // Chuyển userId sang ObjectId
         const userObjectId = new ObjectId(userId);
 
-        // Chuyển productId trong mỗi item sang ObjectId và chỉ lưu productId và quantity
-        const formattedItems = items.map(item => ({
-            productId: new ObjectId(item.productId), // Chuyển productId sang ObjectId
-            quantity: item.quantity // Chỉ lưu quantity
-        }));
+        // Lấy thông tin sản phẩm từ database
+        const productIds = items.map(item => new ObjectId(item.productId));
+        const products = await Product.find({ _id: { $in: productIds } }).toArray();
+
+        // Kiểm tra nếu có sản phẩm không tồn tại
+        if (products.length !== items.length) {
+            return res.status(400).json({ message: "Some products do not exist." });
+        }
+
+        // Tính tổng giá trị đơn hàng và định dạng items
+        let total = 0;
+        const formattedItems = items.map(item => {
+            const product = products.find(p => p._id.toString() === item.productId);
+            const itemTotal = product.price * item.quantity;
+            total += itemTotal;
+
+            return {
+                productId: new ObjectId(item.productId),
+                quantity: item.quantity,
+                price: product.price, // Lưu giá tại thời điểm tạo đơn hàng
+                total: itemTotal // Tổng giá trị cho từng sản phẩm
+            };
+        });
 
         // Tạo document cho đơn hàng
         const newOrder = {
@@ -38,6 +56,7 @@ async function createOrder(req, res) {
             address,
             phoneNumber, // Thêm số điện thoại
             status: 'pending', // Trạng thái đơn hàng ban đầu
+            total, // Tổng giá trị đơn hàng
             createdAt: new Date(),
             updatedAt: new Date(),
         };
@@ -47,13 +66,15 @@ async function createOrder(req, res) {
 
         res.status(201).json({ 
             message: "Order created successfully", 
-            orderId: result.insertedId
+            orderId: result.insertedId,
+            total // Trả về tổng giá trị đơn hàng
         });
     } catch (error) {
         console.error("Error creating order:", error);
         res.status(500).json({ message: "Error creating order", error: error.message });
     }
 }
+
 
 // 2. Lấy danh sách đơn hàng của một người dùng
 async function getOrdersByUserId(req, res) {
