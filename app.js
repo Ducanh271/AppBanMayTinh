@@ -14,7 +14,12 @@ const { MongoClient } = require('mongodb');
 const bcrypt = require('bcrypt'); // Import bcrypt để mã hóa mật khẩu
 const path = require('path');
 const cors = require('cors');
-app.use(cors());
+// app.use(cors());
+app.use(cors({
+  origin: '*', // Cho phép tất cả nguồn
+  methods: 'GET,POST,PUT,DELETE', // Các phương thức được phép
+  allowedHeaders: 'Content-Type,Authorization'
+}));
 app.use(express.json());
 app.use('/api/products', productRoutes); // Sử dụng route cho sản phẩm
 app.use('/api/carts', cartRoutes); // Route giỏ hàng

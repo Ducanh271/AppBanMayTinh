@@ -43,6 +43,8 @@ async function createOrder(req, res) {
 
             return {
                 productId: new ObjectId(item.productId),
+                title: product.title, // Lưu tên sản phẩm
+                image: product.image,
                 quantity: item.quantity,
                 price: product.price, // Lưu giá tại thời điểm tạo đơn hàng
                 total: itemTotal // Tổng giá trị cho từng sản phẩm
@@ -56,9 +58,9 @@ async function createOrder(req, res) {
             address,
             phoneNumber, // Thêm số điện thoại
             status: 'pending', // Trạng thái đơn hàng ban đầu
-            total, // Tổng giá trị đơn hàng
             createdAt: new Date(),
             updatedAt: new Date(),
+            total // Tổng giá trị đơn hàng
         };
 
         // Lưu vào collection "orders"
@@ -107,36 +109,7 @@ async function getOrderById(req, res) {
         if (!order) {
             return res.status(404).json({ message: "Order not found" });
         }
-
-        // Truy vấn thông tin sản phẩm từ collection products
-        const productIds = order.items.map(item => item.productId);
-        const products = await Product.find({ _id: { $in: productIds } }).toArray();
-
-        // Ghép thông tin sản phẩm vào items
-        const detailedItems = order.items.map(item => {
-            const product = products.find(p => p._id.toString() === item.productId.toString());
-            return {
-                productId: item.productId,
-                title: product?.title || "Unknown Product", // Lấy title từ products
-                price: product?.price || 0, // Lấy price từ products
-                quantity: item.quantity,
-                total: (product?.price || 0) * item.quantity // Tính tổng cho từng sản phẩm
-            };
-        });
-
-        // Chuẩn bị phản hồi chi tiết đơn hàng
-        const detailedOrder = {
-            _id: order._id,
-            userId: order.userId,
-            items: detailedItems,
-            address: order.address,
-            totalPrice: detailedItems.reduce((sum, item) => sum + item.total, 0), // Tính tổng giá trị đơn hàng
-            status: order.status,
-            createdAt: order.createdAt,
-            updatedAt: order.updatedAt
-        };
-
-        res.status(200).json(detailedOrder);
+        res.status(200).json(order);
     } catch (error) {
         console.error("Error fetching order:", error);
         res.status(500).json({ message: "Error fetching order", error: error.message });
