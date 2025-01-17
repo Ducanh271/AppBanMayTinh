@@ -1,27 +1,27 @@
 const jwt = require('jsonwebtoken');
 
 // Middleware xác thực người dùng
-const authenticate = (req, res, next) => {
-    const token = req.headers.authorization?.split(' ')[1];
+function authenticate(req, res, next) {
+    const token = req.headers.authorization?.split(" ")[1];
     if (!token) {
-        return res.status(401).json({ message: "Authentication required" });
+        return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
-
     try {
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.user = decoded;
+        req.user = decoded; // Lưu thông tin user từ token vào request
         next();
     } catch (error) {
-        return res.status(403).json({ message: "Invalid or expired token" });
+        console.error("Error during authentication:", error);
+        res.status(401).json({ message: "Unauthorized: Invalid token" });
     }
-};
+}
 
-// Middleware phân quyền chỉ dành cho admin
-const authorizeAdmin = (req, res, next) => {
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ message: "Access denied: Admins only" });
+// Middleware phân quyền admin
+function authorizeAdmin(req, res, next) {
+    if (req.user.role !== "admin") {
+        return res.status(403).json({ message: "Forbidden: Admins only" });
     }
     next();
-};
+}
 
 module.exports = { authenticate, authorizeAdmin };

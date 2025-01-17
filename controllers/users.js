@@ -5,43 +5,6 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 
 const { hashPassword, comparePassword } = require('../utils/hash'); // Import từ hash.js
-//0. Thêm admin
-// Hàm thêm admin mới
-async function addAdmin(req, res) {
-    const { name, email, password } = req.body;
-
-    if (!name || !email || !password) {
-        return res.status(400).json({ message: "Name, email, and password are required" });
-    }
-
-    try {
-        // Kiểm tra email đã tồn tại hay chưa
-        const existingUser = await User.findOne({ email });
-        if (existingUser) {
-            return res.status(400).json({ message: "Email already exists" });
-        }
-        // Mã hóa mật khẩu
-        const hashedPassword = await hashPassword(password);
-
-        // Tạo admin mới
-        const newAdmin = {
-            name,
-            email,
-            password: hashedPassword,
-            role: "admin", // Vai trò admin
-            createdAt: new Date(),
-        };
-
-        const result = await User.insertOne(newAdmin);
-        res.status(201).json({
-            message: "Admin created successfully",
-            adminId: result.insertedId,
-        });
-    } catch (error) {
-        console.error("Error creating admin:", error);
-        res.status(500).json({ message: "Internal server error", error: error.message });
-    }
-}
 //1. Thêm người dùng mới
 async function addUser(req, res) {
     const { name, email, password} = req.body;
@@ -105,32 +68,36 @@ async function getUserById(req, res) {
 async function userLogin(req, res) {
     const { email, password } = req.body;
 
-    // Kiểm tra dữ liệu đầu vào
     if (!email || !password) {
         return res.status(400).json({ message: "Email and password are required" });
     }
 
     try {
-        // Tìm người dùng dựa trên email
         const user = await User.findOne({ email: email });
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        // So sánh mật khẩu bằng hàm từ hash.js
         const isMatch = await comparePassword(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: "Invalid password" });
+            return res.status(401).json({ message: "Invalid password" }); // Trả về lỗi 401
         }
 
-        // Trả về thông tin người dùng (hoặc JWT token)
+        const token = jwt.sign(
+            { id: user._id, role: user.role },
+            process.env.JWT_SECRET,
+            { expiresIn: '1h' }
+        );
+
         res.status(200).json({
             message: "Login successful",
+            token,
             user: {
                 id: user._id,
                 name: user.name,
-                email: user.email
+                email: user.email,
+                role: user.role
             }
         });
     } catch (error) {
@@ -139,47 +106,7 @@ async function userLogin(req, res) {
     }
 }
 
-// async function userLogin(req, res) {
-//     const { email, password } = req.body;
 
-//     if (!email || !password) {
-//         return res.status(400).json({ message: "Email and password are required" });
-//     }
-
-//     try {
-//         const user = await User.findOne({ email });
-
-//         if (!user) {
-//             return res.status(404).json({ message: "User not found" });
-//         }
-
-//         const isMatch = await bcrypt.compare(password, user.password);
-//         if (!isMatch) {
-//             return res.status(401).json({ message: "Invalid password" });
-//         }
-
-//         // Tạo JWT token
-//         const token = jwt.sign(
-//             { id: user._id, role: user.role },
-//             process.env.JWT_SECRET,
-//             { expiresIn: '1h' } // Token hết hạn sau 1 giờ
-//         );
-
-//         res.status(200).json({
-//             message: "Login successful",
-//             token, // Trả về token
-//             user: {
-//                 id: user._id,
-//                 name: user.name,
-//                 email: user.email,
-//                 role: user.role,
-//             },
-//         });
-//     } catch (error) {
-//         console.error("Error during login:", error);
-//         res.status(500).json({ message: "Internal server error" });
-//     }
-// }
 //4. Lấy tất cả người dùng
 async function getAllUsers(req, res) {
     try {
@@ -296,4 +223,4 @@ async function deleteUserById(req, res) {
         res.status(500).json({ message: "Internal server error", error: error.message });
     }
 }
-module.exports = { addAdmin, deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };
+module.exports = {deleteUserById, updateUserById, getUsersWithSort, getUsersWithLimit, getAllUsers, userLogin, addUser, getUserById };

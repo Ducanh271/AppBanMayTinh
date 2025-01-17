@@ -1,4 +1,5 @@
-﻿// Hàm load tất cả người dùng
+﻿
+// Hàm load tất cả người dùng
 async function loadUsers() {
     try {
         const response = await fetch('http://localhost:3000/api/users');

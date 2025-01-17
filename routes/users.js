@@ -13,18 +13,18 @@ const {
     getAllUsers,
     userLogin,
     addUser,
-    addAdmin,
     getUserById
 } = require('../controllers/users');
 
 
 
 const { authenticate, authorizeAdmin } = require('../middlewares/auth'); // Import middleware
-// Nhóm route liên quan đến quản lý người dùng
+
+router.get('/adminPage', authenticate, authorizeAdmin, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/AdminPage', 'AdminPageProduct.html')); // Đường dẫn tới AdminPage
+});
 // Route: Đăng nhập người dùng
 router.post('/login', userLogin);
-// Route: Thêm admin (chỉ dành cho admin)
-router.post('/add-admin', authenticate, authorizeAdmin, addAdmin); // Thêm route addAdmin
 // Route: Thêm người dùng mới
 router.post('/', addUser);
 router.get('/', getAllUsers);

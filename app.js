@@ -66,6 +66,9 @@ async function createDefaultAdmin() {
 app.get('/adminPage', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/AdminPage', 'AdminPageProduct.html'));
 });
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/AdminPage', 'login.html'));
+});
 app.listen(port, async () => {
   await connectDB();
   await createDefaultAdmin();
